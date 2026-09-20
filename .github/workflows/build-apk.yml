@@ -12,9 +12,23 @@ jobs:
         with:
           repository: tamk283/ProtoHax
           ref: stable
-          submodules: recursive
+          # NOTE: submodules disabled on purpose — the pinned submodule
+          # mccheatz/mcpedata no longer exists (org deleted, repo 404).
+          # The data is fetched from a mirror in the next step instead.
+          submodules: false
           path: ProtoHax
+      - name: Fetch mcpedata (submodule mirror)
+        # Original submodule url https://github.com/mccheatz/mcpedata.git is dead;
+        # CloudPixel-Studio/mcpedata carries the same layout
+        # (blocks/canonical_block_states_*.nbt.gz, items, *.json, legacy_block_states.nbt.gz).
+        working-directory: ProtoHax/src/main/resources/assets
+        run: |
+          rm -rf mcpedata
+          git clone --depth 1 https://github.com/CloudPixel-Studio/mcpedata.git mcpedata
+          ls mcpedata
       - name: Set up JDK 17
+        # AGP 8.0.2 requires JDK 17 to run; the ProtoHax core still compiles
+        # against Java 11 via kotlin.jvmToolchain(11), which auto-provisions JDK 11.
         uses: actions/setup-java@v4
         with:
           distribution: temurin
