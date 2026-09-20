@@ -8,6 +8,7 @@ import android.graphics.PixelFormat
 import android.net.VpnService
 import android.view.*
 import android.widget.ImageView
+import androidx.core.view.isInvisible
 import dev.sora.protohax.MyApplication
 import dev.sora.protohax.R
 import dev.sora.protohax.relay.MinecraftRelay
