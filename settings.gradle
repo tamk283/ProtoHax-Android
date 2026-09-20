@@ -9,7 +9,9 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         mavenLocal()
-        maven { url = 'https://mccheatz.github.io/maven_repo/' }
+        // NOTE (fork fix): mccheatz.github.io/maven_repo is dead (org deleted),
+        // mirror of the same repo content hosted for ProtoHax builds.
+        maven { url = 'https://raw.githubusercontent.com/SkidderMC/ProtoHax-PackageGit/main/maven_repo/' }
         google()
         mavenCentral()
     }
