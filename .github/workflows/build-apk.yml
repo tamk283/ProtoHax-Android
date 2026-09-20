@@ -1,0 +1,41 @@
+name: Build APK
+on:
+  push:
+    branches: [ stable, main, master ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ProtoHax core
+        uses: actions/checkout@v4
+        with:
+          repository: tamk283/ProtoHax
+          ref: stable
+          submodules: recursive
+          path: ProtoHax
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Publish ProtoHax core to mavenLocal
+        working-directory: ProtoHax
+        run: chmod +x ./gradlew && ./gradlew publishToMavenLocal --no-daemon --stacktrace
+      - name: Checkout ProtoHax-Android
+        uses: actions/checkout@v4
+        with:
+          path: ProtoHax-Android
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Grant gradlew execute
+        working-directory: ProtoHax-Android
+        run: chmod +x ./gradlew
+      - name: Build debug APK
+        working-directory: ProtoHax-Android
+        run: ./gradlew app:assembleDebug --no-daemon --stacktrace
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ProtoHax-Android-debug-apk
+          path: ProtoHax-Android/app/build/outputs/apk/debug/*.apk
