@@ -40,8 +40,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: ProtoHax-Android
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Check Android SDK (preinstalled on runner)
+        # ubuntu-latest images ship the Android SDK; android-actions/setup-android@v3
+        # is broken with current cmdline-tools ("Failed to find package 'tools'"),
+        # so we rely on the preinstalled SDK instead of reinstalling it.
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          ls "$ANDROID_HOME/platforms" | tail -5
+          ls "$ANDROID_HOME/build-tools" | tail -5
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
       - name: Grant gradlew execute
         working-directory: ProtoHax-Android
         run: chmod +x ./gradlew
